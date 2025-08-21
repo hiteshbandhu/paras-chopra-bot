@@ -41,9 +41,11 @@ export default function Page() {
 
       setIsSuccessful(true);
       updateSession();
-      router.refresh();
+
+      // Redirect to home page after successful registration
+      router.push('/');
     }
-  }, [state]);
+  }, [state, router, updateSession]);
 
   const handleSubmit = (formData: FormData) => {
     setEmail(formData.get('email') as string);

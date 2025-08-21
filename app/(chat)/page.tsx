@@ -5,7 +5,7 @@ import { Chat } from '@/components/chat';
 import { DEFAULT_CHAT_MODEL } from '@/lib/ai/models';
 import { generateUUID } from '@/lib/utils';
 import { DataStreamHandler } from '@/components/data-stream-handler';
-import { auth, signIn } from '../(auth)/auth';
+import { auth } from '../(auth)/auth';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
@@ -47,31 +47,12 @@ export default async function Page() {
   const session = await auth();
 
   if (!session) {
-    await signIn('guest', { redirectTo: '/chat' });
+    redirect('/landing');
   }
 
   const id = generateUUID();
-
   const cookieStore = await cookies();
-  const modelIdFromCookie = cookieStore.get('chat-model');
-
-  if (!modelIdFromCookie) {
-    return (
-      <>
-        <Chat
-          key={id}
-          id={id}
-          initialMessages={[]}
-          initialChatModel={DEFAULT_CHAT_MODEL}
-          initialVisibilityType="private"
-          isReadonly={false}
-          session={session}
-          autoResume={false}
-        />
-        <DataStreamHandler />
-      </>
-    );
-  }
+  const modelIdFromCookie = cookieStore.get('chat-model')?.value;
 
   return (
     <>
@@ -79,7 +60,7 @@ export default async function Page() {
         key={id}
         id={id}
         initialMessages={[]}
-        initialChatModel={modelIdFromCookie.value}
+        initialChatModel={modelIdFromCookie || DEFAULT_CHAT_MODEL}
         initialVisibilityType="private"
         isReadonly={false}
         session={session}

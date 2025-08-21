@@ -32,7 +32,7 @@ export const Greeting = ({ session }: GreetingProps) => {
 
         if (response.ok) {
           const data = await response.json();
-          const userType = session.user.type || 'guest';
+          const userType = session.user.type || 'regular';
           const maxMessages =
             entitlementsByUserType[userType].maxMessagesPerDay;
           const usedMessages = data.count || 0;
@@ -54,14 +54,14 @@ export const Greeting = ({ session }: GreetingProps) => {
     }
 
     if (!session?.user?.id) {
-      return '<strong>Guest users:</strong> 10 messages • <strong>Sign up:</strong> 100 messages';
+      return '<strong>Sign up:</strong> 100 messages per day';
     }
 
-    const userType = session.user.type || 'guest';
+    const userType = session.user.type || 'regular';
     const maxMessages = entitlementsByUserType[userType].maxMessagesPerDay;
 
     if (remainingMessages === null) {
-      return `<strong>${userType === 'guest' ? 'Guest' : 'Registered'} users:</strong> ${maxMessages} messages`;
+      return `<strong>Registered users:</strong> ${maxMessages} messages per day`;
     }
 
     return `<strong>Messages remaining:</strong> ${remainingMessages} / ${maxMessages}`;
