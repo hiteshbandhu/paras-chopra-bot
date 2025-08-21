@@ -9,6 +9,8 @@ import { useMessages } from '@/hooks/use-messages';
 import type { ChatMessage } from '@/lib/types';
 import { useDataStream } from './data-stream-provider';
 
+import type { Session } from 'next-auth';
+
 interface MessagesProps {
   chatId: string;
   status: UseChatHelpers<ChatMessage>['status'];
@@ -18,6 +20,7 @@ interface MessagesProps {
   regenerate: UseChatHelpers<ChatMessage>['regenerate'];
   isReadonly: boolean;
   isArtifactVisible: boolean;
+  session?: Session;
 }
 
 function PureMessages({
@@ -28,6 +31,7 @@ function PureMessages({
   setMessages,
   regenerate,
   isReadonly,
+  session,
 }: MessagesProps) {
   const {
     containerRef: messagesContainerRef,
@@ -47,7 +51,7 @@ function PureMessages({
       ref={messagesContainerRef}
       className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4 relative"
     >
-      {messages.length === 0 && <Greeting />}
+      {messages.length === 0 && <Greeting session={session} />}
 
       {messages.map((message, index) => (
         <PreviewMessage

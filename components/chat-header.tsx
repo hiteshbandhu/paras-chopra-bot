@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useWindowSize } from 'usehooks-ts';
+import Image from 'next/image';
 
 import { ModelSelector } from '@/components/model-selector';
 import { SidebarToggle } from '@/components/sidebar-toggle';
@@ -55,7 +56,47 @@ function PureChatHeader({
         </Tooltip>
       )}
 
-      {!isReadonly && (
+      <div className="flex items-center gap-3 ml-auto text-sm text-muted-foreground pr-8">
+        <span className="font-medium">by</span>
+        <Link
+          href="https://x.com/_hiteshbandhu"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground transition-colors flex items-center gap-2 group"
+        >
+          <div className="relative">
+            <Image
+              src="https://pbs.twimg.com/profile_images/1781411418245337088/JDNELrGM_400x400.jpg"
+              alt="Hitesh Bandhu"
+              width={24}
+              height={24}
+              className="rounded-full ring-2 ring-transparent group-hover:ring-blue-200 transition-all"
+            />
+          </div>
+          <span className="font-medium">@_hiteshbandhu</span>
+        </Link>
+        <span className="text-gray-400">•</span>
+        <span className="font-medium">data from</span>
+        <Link
+          href="https://x.com/paraschopra"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground transition-colors flex items-center gap-2 group"
+        >
+          <div className="relative">
+            <Image
+              src="https://pbs.twimg.com/profile_images/1593808778281246722/osBOm_5v_400x400.jpg"
+              alt="Paras Chopra"
+              width={24}
+              height={24}
+              className="rounded-full ring-2 ring-transparent group-hover:ring-green-200 transition-all"
+            />
+          </div>
+          <span className="font-medium">@paraschopra</span>
+        </Link>
+      </div>
+
+      {/* {!isReadonly && (
         <ModelSelector
           session={session}
           selectedModelId={selectedModelId}
@@ -82,7 +123,7 @@ function PureChatHeader({
           <VercelIcon size={16} />
           Deploy with Vercel
         </Link>
-      </Button>
+      </Button> */}
     </header>
   );
 }

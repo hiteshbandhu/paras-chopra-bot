@@ -23,6 +23,8 @@ import { createDocument } from '@/lib/ai/tools/create-document';
 import { updateDocument } from '@/lib/ai/tools/update-document';
 import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
 import { getWeather } from '@/lib/ai/tools/get-weather';
+import { ragSearch } from '@/lib/ai/tools/rag-search';
+import { essaySearch } from '@/lib/ai/tools/essay-search';
 import { isProductionEnvironment } from '@/lib/constants';
 import { myProvider } from '@/lib/ai/providers';
 import { entitlementsByUserType } from '@/lib/ai/entitlements';
@@ -155,7 +157,7 @@ export async function POST(request: Request) {
           model: myProvider.languageModel(selectedChatModel),
           system: systemPrompt({ selectedChatModel, requestHints }),
           messages: convertToModelMessages(uiMessages),
-          stopWhen: stepCountIs(5),
+          stopWhen: stepCountIs(8),
           experimental_activeTools:
             selectedChatModel === 'chat-model-reasoning'
               ? []
@@ -164,6 +166,8 @@ export async function POST(request: Request) {
                   'createDocument',
                   'updateDocument',
                   'requestSuggestions',
+                  'ragSearch',
+                  'essaySearch',
                 ],
           experimental_transform: smoothStream({ chunking: 'word' }),
           tools: {
@@ -174,6 +178,8 @@ export async function POST(request: Request) {
               session,
               dataStream,
             }),
+            ragSearch,
+            essaySearch,
           },
           experimental_telemetry: {
             isEnabled: isProductionEnvironment,
@@ -222,6 +228,9 @@ export async function POST(request: Request) {
     if (error instanceof ChatSDKError) {
       return error.toResponse();
     }
+
+    console.error('Unexpected error in chat route:', error);
+    return new ChatSDKError('offline:chat').toResponse();
   }
 }
 

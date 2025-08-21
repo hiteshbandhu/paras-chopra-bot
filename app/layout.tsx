@@ -7,9 +7,85 @@ import './globals.css';
 import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'Next.js Chatbot Template',
-  description: 'Next.js chatbot template using the AI SDK.',
+  metadataBase: new URL('https://askparas.com'),
+  title: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",
+  description:
+    "Get answers from Paras Chopra's essays and threads with citations. No hallucinations, sources included. Chat with AI trained on 200+ essays from Inverted Passion.",
+  keywords: [
+    'Paras Chopra',
+    'AI chatbot',
+    'Inverted Passion',
+    'startup advice',
+    'entrepreneurship',
+    'productivity',
+    'business insights',
+    'founder advice',
+  ],
+  authors: [{ name: 'Hitesh Bandhu', url: 'https://x.com/_hiteshbandhu' }],
+  creator: 'Hitesh Bandhu',
+  publisher: 'Ask Paras',
+  category: 'Technology',
+  classification: 'AI Chatbot',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: '/icon', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [{ url: '/apple-icon', type: 'image/png' }],
+  },
+  manifest: '/manifest.json',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://askparas.com',
+    siteName: 'Ask Paras',
+    title: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",
+    description:
+      "Get answers from Paras Chopra's essays and threads with citations. No hallucinations, sources included. Chat with AI trained on 200+ essays from Inverted Passion.",
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@_hiteshbandhu',
+    creator: '@_hiteshbandhu',
+    title: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",
+    description:
+      "Get answers from Paras Chopra's essays and threads with citations. No hallucinations, sources included.",
+    images: ['/twitter-image'],
+  },
+  alternates: {
+    canonical: 'https://askparas.com',
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+  other: {
+    'application-name': 'Ask Paras',
+    'apple-mobile-web-app-title': 'Ask Paras',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'mobile-web-app-capable': 'yes',
+    'msapplication-TileColor': '#667eea',
+    'msapplication-config': '/browserconfig.xml',
+  },
 };
 
 export const viewport = {

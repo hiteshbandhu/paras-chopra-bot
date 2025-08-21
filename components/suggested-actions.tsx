@@ -1,15 +1,17 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { memo } from 'react';
-import type { UseChatHelpers } from '@ai-sdk/react';
 import type { VisibilityType } from './visibility-selector';
 import type { ChatMessage } from '@/lib/types';
 
 interface SuggestedActionsProps {
   chatId: string;
-  sendMessage: UseChatHelpers<ChatMessage>['sendMessage'];
+  sendMessage: (message: {
+    role: 'user';
+    parts: Array<{ type: 'text'; text: string }>;
+  }) => void;
   selectedVisibilityType: VisibilityType;
 }
 
@@ -20,24 +22,24 @@ function PureSuggestedActions({
 }: SuggestedActionsProps) {
   const suggestedActions = [
     {
-      title: 'What are the advantages',
-      label: 'of using Next.js?',
-      action: 'What are the advantages of using Next.js?',
+      title: 'How should I choose what to work on next?',
+      label: 'curiosity → exploration → experiments → commit',
+      action: 'How should I choose what to work on next?',
     },
     {
-      title: 'Write code to',
-      label: `demonstrate djikstra's algorithm`,
-      action: `Write code to demonstrate djikstra's algorithm`,
+      title: 'How can a solo founder validate an idea quickly?',
+      label: 'reversible tests, user talks, measure traction',
+      action: 'How can a solo founder validate an idea quickly?',
     },
     {
-      title: 'Help me write an essay',
-      label: `about silicon valley`,
-      action: `Help me write an essay about silicon valley`,
+      title: 'How do I learn faster and remember more?',
+      label: 'knowledge system, practice & notes',
+      action: 'How do I learn faster and remember more?',
     },
     {
-      title: 'What is the weather',
-      label: 'in San Francisco?',
-      action: 'What is the weather in San Francisco?',
+      title: 'What does "meaning is constructed" look like ?',
+      label: 'principles → routines → projects → feedback',
+      action: 'What does "meaning is constructed" look like in daily life?',
     },
   ];
 
@@ -68,7 +70,7 @@ function PureSuggestedActions({
             className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
           >
             <span className="font-medium">{suggestedAction.title}</span>
-            <span className="text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               {suggestedAction.label}
             </span>
           </Button>
@@ -81,10 +83,9 @@ function PureSuggestedActions({
 export const SuggestedActions = memo(
   PureSuggestedActions,
   (prevProps, nextProps) => {
-    if (prevProps.chatId !== nextProps.chatId) return false;
-    if (prevProps.selectedVisibilityType !== nextProps.selectedVisibilityType)
-      return false;
-
-    return true;
+    return (
+      prevProps.chatId === nextProps.chatId &&
+      prevProps.selectedVisibilityType === nextProps.selectedVisibilityType
+    );
   },
 );

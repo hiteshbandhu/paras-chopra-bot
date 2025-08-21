@@ -168,6 +168,49 @@ export function PureMessageActions({
           </TooltipTrigger>
           <TooltipContent>Downvote Response</TooltipContent>
         </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              className="py-1 px-2 h-fit text-muted-foreground"
+              variant="outline"
+              onClick={() => {
+                const textFromParts = message.parts
+                  ?.filter((part) => part.type === 'text')
+                  .map((part) => part.text)
+                  .join('\n')
+                  .trim();
+
+                if (!textFromParts) {
+                  toast.error("There's no text to share!");
+                  return;
+                }
+
+                const truncatedContent =
+                  textFromParts.length > 200
+                    ? `${textFromParts.substring(0, 200)}...`
+                    : textFromParts;
+
+                const shareText = `💡 ${truncatedContent}\n\n#AskParas`;
+                const shareUrl = 'https://askparas.com';
+
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+
+                window.open(twitterUrl, '_blank', 'width=600,height=400');
+              }}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Share on X</TooltipContent>
+        </Tooltip>
       </div>
     </TooltipProvider>
   );

@@ -536,3 +536,22 @@ export async function getStreamIdsByChatId({ chatId }: { chatId: string }) {
     );
   }
 }
+
+export async function getSampleDocuments({
+  limit = 5,
+}: { limit?: number } = {}) {
+  try {
+    const documents = await db
+      .select()
+      .from(document)
+      .orderBy(desc(document.createdAt))
+      .limit(limit);
+
+    return documents;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get sample documents',
+    );
+  }
+}

@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { MessageEditor } from './message-editor';
 import { DocumentPreview } from './document-preview';
 import { MessageReasoning } from './message-reasoning';
+import { ToolExecutionStatus } from './tool-execution-status';
 import type { UseChatHelpers } from '@ai-sdk/react';
 import type { ChatMessage } from '@/lib/types';
 import { useDataStream } from './data-stream-provider';
@@ -260,6 +261,58 @@ const PurePreviewMessage = ({
                         type="update"
                         result={output}
                         isReadonly={isReadonly}
+                      />
+                    </div>
+                  );
+                }
+              }
+
+              if (type === 'tool-ragSearch') {
+                const { toolCallId, state } = part;
+
+                if (state === 'input-available') {
+                  return (
+                    <div key={toolCallId}>
+                      <ToolExecutionStatus
+                        toolName="ragSearch"
+                        isExecuting={true}
+                      />
+                    </div>
+                  );
+                }
+
+                if (state === 'output-available') {
+                  return (
+                    <div key={toolCallId}>
+                      <ToolExecutionStatus
+                        toolName="ragSearch"
+                        isExecuting={false}
+                      />
+                    </div>
+                  );
+                }
+              }
+
+              if (type === 'tool-essaySearch') {
+                const { toolCallId, state } = part;
+
+                if (state === 'input-available') {
+                  return (
+                    <div key={toolCallId}>
+                      <ToolExecutionStatus
+                        toolName="essaySearch"
+                        isExecuting={true}
+                      />
+                    </div>
+                  );
+                }
+
+                if (state === 'output-available') {
+                  return (
+                    <div key={toolCallId}>
+                      <ToolExecutionStatus
+                        toolName="essaySearch"
+                        isExecuting={false}
                       />
                     </div>
                   );
