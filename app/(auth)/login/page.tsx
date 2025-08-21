@@ -27,17 +27,22 @@ export default function Page() {
   const { update: updateSession } = useSession();
 
   useEffect(() => {
+    console.log('🔄 Login page: State changed to:', state.status);
+
     if (state.status === 'failed') {
+      console.log('❌ Login page: Login failed');
       toast({
         type: 'error',
         description: 'Invalid credentials!',
       });
     } else if (state.status === 'invalid_data') {
+      console.log('📝 Login page: Invalid data');
       toast({
         type: 'error',
         description: 'Failed validating your submission!',
       });
     } else if (state.status === 'success') {
+      console.log('✅ Login page: Login successful, redirecting...');
       setIsSuccessful(true);
       updateSession();
       // Redirect to home page after successful login
@@ -46,7 +51,14 @@ export default function Page() {
   }, [state.status, router, updateSession]);
 
   const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get('email') as string);
+    console.log('📤 Login page: Form submitted');
+    const emailValue = formData.get('email') as string;
+    const passwordValue = formData.get('password') as string;
+
+    console.log('📧 Login page: Email:', emailValue);
+    console.log('🔑 Login page: Password length:', passwordValue?.length || 0);
+
+    setEmail(emailValue);
     formAction(formData);
   };
 

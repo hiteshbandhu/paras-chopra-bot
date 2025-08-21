@@ -41,25 +41,48 @@ export const {
     Credentials({
       credentials: {},
       async authorize({ email, password }: any) {
-        const users = await getUser(email);
+        console.log('🔐 Auth: Attempting to authorize user:', email);
 
-        if (users.length === 0) {
-          await compare(password, DUMMY_PASSWORD);
+        try {
+          const users = await getUser(email);
+          console.log('🔍 Auth: Found users:', users.length);
+
+          if (users.length === 0) {
+            console.log('❌ Auth: No user found with email:', email);
+            await compare(password, DUMMY_PASSWORD);
+            return null;
+          }
+
+          const [user] = users;
+          console.log('👤 Auth: User found:', {
+            id: user.id,
+            email: user.email,
+            hasPassword: !!user.password,
+          });
+
+          if (!user.password) {
+            console.log('❌ Auth: User has no password');
+            await compare(password, DUMMY_PASSWORD);
+            return null;
+          }
+
+          const passwordsMatch = await compare(password, user.password);
+          console.log('🔑 Auth: Password match:', passwordsMatch);
+
+          if (!passwordsMatch) {
+            console.log('❌ Auth: Password does not match');
+            return null;
+          }
+
+          console.log(
+            '✅ Auth: Authentication successful for user:',
+            user.email,
+          );
+          return { ...user, type: 'regular' };
+        } catch (error) {
+          console.error('💥 Auth: Error during authorization:', error);
           return null;
         }
-
-        const [user] = users;
-
-        if (!user.password) {
-          await compare(password, DUMMY_PASSWORD);
-          return null;
-        }
-
-        const passwordsMatch = await compare(password, user.password);
-
-        if (!passwordsMatch) return null;
-
-        return { ...user, type: 'regular' };
       },
     }),
   ],

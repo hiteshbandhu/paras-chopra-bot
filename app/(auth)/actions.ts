@@ -20,23 +20,41 @@ export const login = async (
   formData: FormData,
 ): Promise<LoginActionState> => {
   try {
+    console.log('🚀 Login action: Starting login process');
+
     const validatedData = authFormSchema.parse({
       email: formData.get('email'),
       password: formData.get('password'),
     });
 
-    await signIn('credentials', {
+    console.log('📧 Login action: Validated email:', validatedData.email);
+    console.log(
+      '🔑 Login action: Password length:',
+      validatedData.password.length,
+    );
+
+    const result = await signIn('credentials', {
       email: validatedData.email,
       password: validatedData.password,
       redirect: false,
     });
 
+    console.log('🔄 Login action: SignIn result:', result);
+
+    if (result?.error) {
+      console.log('❌ Login action: SignIn error:', result.error);
+      return { status: 'failed' };
+    }
+
+    console.log('✅ Login action: Login successful');
     return { status: 'success' };
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.log('📝 Login action: Validation error:', error.errors);
       return { status: 'invalid_data' };
     }
 
+    console.error('💥 Login action: Unexpected error:', error);
     return { status: 'failed' };
   }
 };
@@ -66,12 +84,18 @@ export const register = async (
     if (user) {
       return { status: 'user_exists' } as RegisterActionState;
     }
+
     await createUser(validatedData.email, validatedData.password);
-    await signIn('credentials', {
+
+    const result = await signIn('credentials', {
       email: validatedData.email,
       password: validatedData.password,
       redirect: false,
     });
+
+    if (result?.error) {
+      return { status: 'failed' };
+    }
 
     return { status: 'success' };
   } catch (error) {
@@ -79,6 +103,7 @@ export const register = async (
       return { status: 'invalid_data' };
     }
 
+    console.error('Register error:', error);
     return { status: 'failed' };
   }
 };
