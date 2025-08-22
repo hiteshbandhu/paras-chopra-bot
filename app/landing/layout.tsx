@@ -56,9 +56,5 @@ export const metadata: Metadata = {
 };
 
 export default function LandingLayout({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return children;
 }
