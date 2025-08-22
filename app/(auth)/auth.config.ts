@@ -14,4 +14,6 @@ export const authConfig = {
     // Remove the authorized callback to prevent conflicts with middleware
     // Let middleware handle all authentication routing
   },
+  basePath: '/api/auth',
+  secret: process.env.NEXTAUTH_SECRET,
 } satisfies NextAuthConfig;
