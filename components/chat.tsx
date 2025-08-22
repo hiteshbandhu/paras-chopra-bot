@@ -2,7 +2,7 @@
 
 import { DefaultChatTransport } from 'ai';
 import { useChat } from '@ai-sdk/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { ChatHeader } from '@/components/chat-header';
 import type { Vote } from '@/lib/db/schema';
@@ -22,6 +22,7 @@ import { useAutoResume } from '@/hooks/use-auto-resume';
 import { ChatSDKError } from '@/lib/errors';
 import type { Attachment, ChatMessage } from '@/lib/types';
 import { useDataStream } from './data-stream-provider';
+import { useAnalytics } from '@/hooks/use-analytics';
 
 export function Chat({
   id,
@@ -47,8 +48,11 @@ export function Chat({
 
   const { mutate } = useSWRConfig();
   const { setDataStream } = useDataStream();
+  const analytics = useAnalytics();
 
   const [input, setInput] = useState<string>('');
+
+  const startTimeRef = useRef<number | null>(null);
 
   const {
     messages,
@@ -79,9 +83,43 @@ export function Chat({
       },
     }),
     onData: (dataPart) => {
+      // Track when response starts coming in
+      if (!startTimeRef.current) {
+        startTimeRef.current = Date.now();
+      }
       setDataStream((ds) => (ds ? [...ds, dataPart] : []));
     },
     onFinish: () => {
+      const responseTime = startTimeRef.current
+        ? Date.now() - startTimeRef.current
+        : 0;
+      startTimeRef.current = null;
+
+      // Track message completion with response time
+      const lastUserMessage = [...messages]
+        .reverse()
+        .find((msg) => msg.role === 'user');
+      if (lastUserMessage) {
+        const messageText = lastUserMessage.parts
+          .filter((part) => part.type === 'text')
+          .map((part) => part.text)
+          .join('');
+
+        analytics.trackMessage({
+          messageLength: messageText.length,
+          hasAttachments:
+            attachments.length > 0 ||
+            lastUserMessage.parts.some(
+              (part) => part.type !== 'text' && part.type !== 'reasoning',
+            ),
+          model: initialChatModel,
+          conversationId: id,
+          isFirstMessage:
+            messages.filter((msg) => msg.role === 'user').length === 1,
+          responseTime,
+        });
+      }
+
       mutate(unstable_serialize(getChatHistoryPaginationKey));
       // Refresh message usage after successful message completion
       if (
@@ -92,6 +130,12 @@ export function Chat({
       }
     },
     onError: (error) => {
+      // Track failed messages
+      analytics.trackChatInteraction('message_error', {
+        conversation_id: id,
+        error_message: error.message,
+      });
+
       if (error instanceof ChatSDKError) {
         toast({
           type: 'error',
@@ -108,6 +152,9 @@ export function Chat({
 
   useEffect(() => {
     if (query && !hasAppendedQuery) {
+      // Track new conversation start
+      analytics.trackConversationStart(id, 'query_param');
+
       sendMessage({
         role: 'user' as const,
         parts: [{ type: 'text', text: query }],
@@ -116,7 +163,7 @@ export function Chat({
       setHasAppendedQuery(true);
       window.history.replaceState({}, '', `/chat/${id}`);
     }
-  }, [query, sendMessage, hasAppendedQuery, id]);
+  }, [query, sendMessage, hasAppendedQuery, id, analytics]);
 
   const { data: votes } = useSWR<Array<Vote>>(
     messages.length >= 2 ? `/api/vote?chatId=${id}` : null,
