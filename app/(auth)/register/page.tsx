@@ -42,8 +42,10 @@ export default function Page() {
       setIsSuccessful(true);
       updateSession();
 
-      // Redirect to home page after successful registration
-      router.push('/');
+      // Wait for session to be updated before redirecting to avoid redirect loop
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     }
   }, [state, router, updateSession]);
 

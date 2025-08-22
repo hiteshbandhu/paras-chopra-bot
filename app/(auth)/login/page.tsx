@@ -45,8 +45,10 @@ export default function Page() {
       console.log('✅ Login page: Login successful, redirecting...');
       setIsSuccessful(true);
       updateSession();
-      // Redirect to home page after successful login
-      router.push('/');
+      // Wait for session to be updated before redirecting to avoid redirect loop
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     }
   }, [state.status, router, updateSession]);
 
