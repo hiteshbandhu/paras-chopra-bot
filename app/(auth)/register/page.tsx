@@ -16,6 +16,7 @@ export default function Page() {
 
   const [email, setEmail] = useState('');
   const [isSuccessful, setIsSuccessful] = useState(false);
+  const [lastToastStatus, setLastToastStatus] = useState<string | null>(null);
 
   const [state, formAction] = useActionState<RegisterActionState, FormData>(
     register,
@@ -27,27 +28,38 @@ export default function Page() {
   const { update: updateSession } = useSession();
 
   useEffect(() => {
+    // Prevent showing the same toast multiple times
+    if (lastToastStatus === state.status) {
+      return;
+    }
+
     if (state.status === 'user_exists') {
       toast({ type: 'error', description: 'Account already exists!' });
+      setLastToastStatus(state.status);
     } else if (state.status === 'failed') {
       toast({ type: 'error', description: 'Failed to create account!' });
+      setLastToastStatus(state.status);
     } else if (state.status === 'invalid_data') {
       toast({
         type: 'error',
         description: 'Failed validating your submission!',
       });
+      setLastToastStatus(state.status);
     } else if (state.status === 'success') {
       toast({ type: 'success', description: 'Account created successfully!' });
+      setLastToastStatus(state.status);
 
       setIsSuccessful(true);
-      updateSession();
 
       // Wait for session to be updated before redirecting to avoid redirect loop
       setTimeout(() => {
-        router.push('/');
+        updateSession();
+        setTimeout(() => {
+          router.push('/');
+        }, 500);
       }, 1000);
     }
-  }, [state, router, updateSession]);
+  }, [state.status, router, lastToastStatus]);
 
   const handleSubmit = (formData: FormData) => {
     setEmail(formData.get('email') as string);

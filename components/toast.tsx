@@ -10,7 +10,21 @@ const iconsByType: Record<'success' | 'error', ReactNode> = {
   error: <WarningIcon />,
 };
 
+// Keep track of recent toasts to prevent duplicates
+const recentToasts = new Set<string>();
+const TOAST_DEBOUNCE_MS = 1000;
+
 export function toast(props: Omit<ToastProps, 'id'>) {
+  const toastKey = `${props.type}-${props.description}`;
+
+  // Prevent duplicate toasts within the debounce window
+  if (recentToasts.has(toastKey)) {
+    return;
+  }
+
+  recentToasts.add(toastKey);
+  setTimeout(() => recentToasts.delete(toastKey), TOAST_DEBOUNCE_MS);
+
   return sonnerToast.custom((id) => (
     <Toast id={id} type={props.type} description={props.description} />
   ));

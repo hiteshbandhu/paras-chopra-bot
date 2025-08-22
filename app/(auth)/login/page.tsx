@@ -16,6 +16,7 @@ export default function Page() {
 
   const [email, setEmail] = useState('');
   const [isSuccessful, setIsSuccessful] = useState(false);
+  const [lastToastStatus, setLastToastStatus] = useState<string | null>(null);
 
   const [state, formAction] = useActionState<LoginActionState, FormData>(
     login,
@@ -29,28 +30,38 @@ export default function Page() {
   useEffect(() => {
     console.log('🔄 Login page: State changed to:', state.status);
 
+    // Prevent showing the same toast multiple times
+    if (lastToastStatus === state.status) {
+      return;
+    }
+
     if (state.status === 'failed') {
       console.log('❌ Login page: Login failed');
       toast({
         type: 'error',
         description: 'Invalid credentials!',
       });
+      setLastToastStatus(state.status);
     } else if (state.status === 'invalid_data') {
       console.log('📝 Login page: Invalid data');
       toast({
         type: 'error',
         description: 'Failed validating your submission!',
       });
+      setLastToastStatus(state.status);
     } else if (state.status === 'success') {
       console.log('✅ Login page: Login successful, redirecting...');
       setIsSuccessful(true);
-      updateSession();
+      setLastToastStatus(state.status);
       // Wait for session to be updated before redirecting to avoid redirect loop
       setTimeout(() => {
-        router.push('/');
+        updateSession();
+        setTimeout(() => {
+          router.push('/');
+        }, 500);
       }, 1000);
     }
-  }, [state.status, router, updateSession]);
+  }, [state.status, router, lastToastStatus]);
 
   const handleSubmit = (formData: FormData) => {
     console.log('📤 Login page: Form submitted');
