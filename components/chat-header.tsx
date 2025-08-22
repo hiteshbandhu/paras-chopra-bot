@@ -14,6 +14,7 @@ import { memo } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { type VisibilityType, VisibilitySelector } from './visibility-selector';
 import type { Session } from 'next-auth';
+import { MessageUsage } from './message-usage';
 
 function PureChatHeader({
   chatId,
@@ -57,6 +58,7 @@ function PureChatHeader({
       )}
 
       <div className="flex items-center gap-3 ml-auto text-sm text-muted-foreground pr-8">
+        <MessageUsage />
         <span className="font-medium">by</span>
         <Link
           href="https://x.com/_hiteshbandhu"

@@ -33,6 +33,8 @@ import { generateUUID } from '../utils';
 import { generateHashedPassword } from './utils';
 import type { VisibilityType } from '@/components/visibility-selector';
 import { ChatSDKError } from '../errors';
+import { entitlementsByUserType } from '@/lib/ai/entitlements';
+import type { UserType } from '@/app/(auth)/auth';
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
@@ -479,6 +481,32 @@ export async function getMessageCountByUserId({
     throw new ChatSDKError(
       'bad_request:database',
       'Failed to get message count by user id',
+    );
+  }
+}
+
+export async function getRemainingMessagesByUserId({
+  id,
+  userType,
+}: { id: string; userType: UserType }) {
+  try {
+    const messageCount = await getMessageCountByUserId({
+      id,
+      differenceInHours: 24,
+    });
+
+    const limit = entitlementsByUserType[userType].maxMessagesPerDay;
+    const remaining = Math.max(0, limit - messageCount);
+
+    return {
+      remaining,
+      limit,
+      used: messageCount,
+    };
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get remaining messages by user id',
     );
   }
 }

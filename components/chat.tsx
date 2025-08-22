@@ -83,6 +83,13 @@ export function Chat({
     },
     onFinish: () => {
       mutate(unstable_serialize(getChatHistoryPaginationKey));
+      // Refresh message usage after successful message completion
+      if (
+        typeof window !== 'undefined' &&
+        (window as any).refreshMessageUsage
+      ) {
+        (window as any).refreshMessageUsage();
+      }
     },
     onError: (error) => {
       if (error instanceof ChatSDKError) {
