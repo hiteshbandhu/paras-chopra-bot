@@ -9,11 +9,13 @@ module.exports = {
       exec_mode: 'cluster',
       env: {
         NODE_ENV: 'production',
-        PORT: 3000
+        PORT: 3000,
+        NODE_OPTIONS: '--max-old-space-size=4096',
       },
       env_production: {
         NODE_ENV: 'production',
-        PORT: 3000
+        PORT: 3000,
+        NODE_OPTIONS: '--max-old-space-size=4096',
       },
       error_file: '/var/log/pm2/ai-chatbot-error.log',
       out_file: '/var/log/pm2/ai-chatbot-out.log',
@@ -26,7 +28,7 @@ module.exports = {
       watch: false,
       ignore_watch: ['node_modules', 'logs', '.git'],
       merge_logs: true,
-      log_date_format: 'YYYY-MM-DD HH:mm:ss Z'
-    }
-  ]
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+    },
+  ],
 };
