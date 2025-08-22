@@ -92,7 +92,7 @@ export default function LandingPage() {
                     className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-4 text-lg font-medium"
                     aria-label="Start chatting with 100 messages and history"
                   >
-                    Start chatting — 50 & history
+                    Start chatting — 20 messages & history
                   </Button>
                 </div>
               </div>
