@@ -65,7 +65,7 @@ export const metadata: Metadata = {
       "Get answers from Paras Chopra's essays and threads with citations. No hallucinations, sources included. Chat with AI trained on 200+ essays from Inverted Passion.",
     images: [
       {
-        url: '/opengraph-image',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",

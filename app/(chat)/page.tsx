@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     siteName: 'Ask Paras',
     images: [
       {
-        url: '/opengraph-image',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",
