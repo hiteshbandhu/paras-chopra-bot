@@ -25,9 +25,6 @@ pnpm install
 echo "🔨 Building application..."
 pnpm run build
 
-# Run database migrations
-echo "🗄️ Running database migrations..."
-pnpm run db:migrate
 
 # Restart PM2 process
 echo "🔄 Restarting application..."
