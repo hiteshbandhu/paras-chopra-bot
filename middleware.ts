@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { auth } from './app/(auth)/auth';
 import { isDevelopmentEnvironment } from './lib/constants';
 
 export async function middleware(request: NextRequest) {
@@ -26,20 +26,15 @@ export async function middleware(request: NextRequest) {
   if (pathname === '/' || pathname.startsWith('/chat')) {
     console.log('🔒 Middleware: Protected route, checking authentication');
 
-    const token = await getToken({
-      req: request,
-      secret: process.env.AUTH_SECRET,
-      secureCookie: !isDevelopmentEnvironment,
-    });
+    const session = await auth();
+    console.log('🎫 Middleware: Session exists:', !!session);
 
-    console.log('🎫 Middleware: Token exists:', !!token);
-
-    if (!token) {
-      console.log('🚪 Middleware: No token, redirecting to /landing');
+    if (!session) {
+      console.log('🚪 Middleware: No session, redirecting to /landing');
       return NextResponse.redirect(new URL('/landing', request.url));
     }
 
-    console.log('✅ Middleware: Token valid, allowing access');
+    console.log('✅ Middleware: Session valid, allowing access');
   }
 
   return NextResponse.next();
