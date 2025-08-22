@@ -9,7 +9,7 @@ import './globals.css';
 import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://askparas.com'),
+  metadataBase: new URL('https://askparas.hiteshisbuilding.xyz'),
   title: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",
   description:
     "Get answers from Paras Chopra's essays and threads with citations. No hallucinations, sources included. Chat with AI trained on 200+ essays from Inverted Passion.",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://askparas.com',
+    url: 'https://askparas.hiteshisbuilding.xyz',
     siteName: 'Ask Paras',
     title: "Ask Paras - AI Chatbot with Paras Chopra's Knowledge",
     description:
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     images: ['/twitter-image'],
   },
   alternates: {
-    canonical: 'https://askparas.com',
+    canonical: 'https://askparas.hiteshisbuilding.xyz',
   },
   verification: {
     google: 'your-google-verification-code',
